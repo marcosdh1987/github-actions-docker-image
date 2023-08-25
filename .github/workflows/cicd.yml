@@ -7,7 +7,7 @@ on:
 
 env:
   ECR_REGISTRY: 789524919849.dkr.ecr.us-east-1.amazonaws.com
-  ECR_REPOSITORY: docker
+  ECR_REPOSITORY: sm-studio-custom-pytho310
   IMAGE_TAG: latest
 
 jobs:
@@ -37,4 +37,7 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Tag Docker image
-        run: make promote
+        run: make img-tag
+
+      - name: Push Docker image to Amazon ECR
+        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG

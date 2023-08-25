@@ -22,42 +22,41 @@ jobs:
 
       - name: Build Docker image
         run: make build
-        
-  push-to-ecr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+push-to-ecr:
+  needs: build
+  runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
+    - name: Configure AWS credentials
+      uses: aws-actions/configure-aws-credentials@v1
+      with:
+        aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        aws-region: us-east-1
 
-      - name: Create ECR repository if it doesn't exist
-        if: steps.check-ecr-repo.outputs.exists != 'true'
-        run: |
-          aws ecr create-repository --repository-name ${IMG_NAME}
-          echo "::set-output name=created::true"
+    - name: Check if ECR repository exists
+      id: check-ecr-repo
+      run: |
+        aws ecr describe-repositories --repository-names ${IMG_NAME} || exit 0
+        echo "::set-output name=exists::true"
 
-      - name: Create ECR repository if it doesn't exist
-        if: steps.check-ecr-repo.outputs.exists != 'true'
-        run: |
-          aws ecr create-repository --repository-name ${IMG_NAME}
-          echo "::set-output name=created::true"
+    - name: Create ECR repository if it doesn't exist
+      if: steps.check-ecr-repo.outputs.exists != 'true'
+      run: |
+        aws ecr create-repository --repository-name ${IMG_NAME}
+        echo "::set-output name=created::true"
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+    - name: Login to Amazon ECR
+      id: login-ecr
+      uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Tag Docker image
-        run: make img-tag
+    - name: Tag Docker image
+      run: make img-tag
 
-      - name: Push Docker image to Amazon ECR
-        run: docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
+    - name: Push Docker image to Amazon ECR
+      run: docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
   # deploy-with-terraform:
   #   needs: push-to-ecr

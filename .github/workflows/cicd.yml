@@ -6,6 +6,7 @@ on:
       - main
 
 env:
+  IMG_NAME: $IMG_NAME
   TF_WORKING_DIR: path/to/terraform/code/directory
 
 jobs:
@@ -17,6 +18,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          echo IMG_NAME
           sudo apt-get update
           sudo apt-get install -y make
 
@@ -39,14 +41,14 @@ jobs:
       - name: Check if ECR repository exists
         id: check-ecr-repo
         run: |
-          echo IMG_NAME=${IMG_NAME}
-          aws ecr describe-repositories --repository-names ${IMG_NAME} || exit 0
+          echo IMG_NAME=$IMG_NAME
+          aws ecr describe-repositories --repository-names $IMG_NAME || exit 0
           echo "::set-output name=exists::true"
 
       - name: Create ECR repository if it doesn't exist
         if: steps.check-ecr-repo.outputs.exists != 'true'
         run: |
-          aws ecr create-repository --repository-name ${IMG_NAME}
+          aws ecr create-repository --repository-name $IMG_NAME
           echo "::set-output name=created::true"
 
       - name: Login to Amazon ECR
@@ -57,7 +59,7 @@ jobs:
         run: make img-tag
 
       - name: Push Docker image to Amazon ECR
-        run: docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
+        run: docker push ${ECR_URL}/$IMG_NAME:${IMAGE_TAG}
 
   # deploy-with-terraform:
   #   needs: push-to-ecr

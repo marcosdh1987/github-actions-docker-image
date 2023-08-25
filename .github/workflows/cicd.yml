@@ -32,6 +32,18 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
+      - name: Check if ECR repository exists
+        id: check-ecr-repo
+        run: |
+          aws ecr describe-repositories --repository-names $ECR_REPOSITORY || exit 0
+          echo "::set-output name=exists::true"
+
+      - name: Create ECR repository if it doesn't exist
+        if: steps.check-ecr-repo.outputs.exists != 'true'
+        run: |
+          aws ecr create-repository --repository-name $ECR_REPOSITORY
+          echo "::set-output name=created::true"
+
       - name: Login to Amazon ECR
         id: login-ecr
         uses: aws-actions/amazon-ecr-login@v1

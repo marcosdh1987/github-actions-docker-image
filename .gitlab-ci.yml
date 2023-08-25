@@ -1,0 +1,45 @@
+# image: public.ecr.aws/bitnami/python:3.8 # https://gallery.ecr.aws/bitnami/python
+
+# stages:
+#   - install
+#   - build
+
+# default:
+#   before_script:
+#     - export BUILD_ENV=$( if [ "$CI_COMMIT_REF_NAME" = 'main' ]; then echo "prod"; else echo "dev"; fi )
+
+# variables:
+#   REGION: 'us-west-2'
+#   ACCOUNT: ds
+#   DOCKER_TLS_CERTDIR: ""
+#   DOCKER_DRIVER: overlay
+#   DOCKER_HOST: tcp://docker:2375
+
+# install:
+#   stage: install
+#   script:
+#     - make setup
+#   artifacts:
+#     when: on_success
+#     expire_in: 10 mins
+#     paths:
+#       - .env
+#       - .venv/
+
+# build:image:
+#   stage: build
+#   image: 180477243137.dkr.ecr.us-west-2.amazonaws.com/docker:prod
+#   services:
+#     - name: 180477243137.dkr.ecr.us-west-2.amazonaws.com/docker:dind
+#       alias: docker
+#   only:
+#     - main
+#   dependencies: [ ]
+#   script:
+#     - mkdir ~/.aws && touch config
+#     - cp $AWS_PROFILES config
+#     - cp config ~/.aws/
+#     - make build
+#     - make promote
+#   variables:
+#     AWS_DEFAULT_PROFILE: konfio-data-science

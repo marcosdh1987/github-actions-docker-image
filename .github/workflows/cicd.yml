@@ -6,7 +6,6 @@ on:
       - main
 
 env:
-  IMG_NAME: $IMG_NAME
   TF_WORKING_DIR: path/to/terraform/code/directory
 
 jobs:
@@ -39,27 +38,32 @@ jobs:
           aws-region: us-east-1
 
       - name: Check if ECR repository exists
-        id: check-ecr-repo
+        id: tag-img-push-ecr
         run: |
-          echo IMG_NAME=$IMG_NAME
-          aws ecr describe-repositories --repository-names $IMG_NAME || exit 0
-          echo "::set-output name=exists::true"
+          make promote
 
-      - name: Create ECR repository if it doesn't exist
-        if: steps.check-ecr-repo.outputs.exists != 'true'
-        run: |
-          aws ecr create-repository --repository-name $IMG_NAME
-          echo "::set-output name=created::true"
+      # - name: Check if ECR repository exists
+      #   id: check-ecr-repo
+      #   run: |
+      #     echo IMG_NAME=$IMG_NAME
+      #     aws ecr describe-repositories --repository-names $IMG_NAME || exit 0
+      #     echo "::set-output name=exists::true"
 
-      - name: Login to Amazon ECR
-        id: login-ecr
-        uses: aws-actions/amazon-ecr-login@v1
+      # - name: Create ECR repository if it doesn't exist
+      #   if: steps.check-ecr-repo.outputs.exists != 'true'
+      #   run: |
+      #     aws ecr create-repository --repository-name $IMG_NAME
+      #     echo "::set-output name=created::true"
 
-      - name: Tag Docker image
-        run: make img-tag
+      # - name: Login to Amazon ECR
+      #   id: login-ecr
+      #   uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Push Docker image to Amazon ECR
-        run: docker push ${ECR_URL}/$IMG_NAME:${IMAGE_TAG}
+      # - name: Tag Docker image
+      #   run: make img-tag
+
+      # - name: Push Docker image to Amazon ECR
+      #   run: docker push ${ECR_URL}/$IMG_NAME:${IMAGE_TAG}
 
   # deploy-with-terraform:
   #   needs: push-to-ecr

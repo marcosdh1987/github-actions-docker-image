@@ -6,7 +6,7 @@ on:
       - main
 
 env:
-  ECR_REGISTRY: 789524919849.dkr.ecr.us-east-1.amazonaws.com/docker
+  ECR_REGISTRY: 789524919849.dkr.ecr.us-east-1.amazonaws.com
   ECR_REPOSITORY: docker
   IMAGE_TAG: latest
 
@@ -37,7 +37,4 @@ jobs:
         uses: aws-actions/amazon-ecr-login@v1
 
       - name: Tag Docker image
-        run: make img-tag
-
-      - name: Push Docker image to Amazon ECR
-        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        run: make promote

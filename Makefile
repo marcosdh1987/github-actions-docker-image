@@ -32,6 +32,15 @@ promote:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 	@docker push ${ECR_URL}/${IMG_NAME}
 
+promote2:
+    $(eval ECR_REPO_EXISTS := $(shell aws ecr describe-repositories --repository-names ${IMG_NAME} 2>/dev/null))
+    @if [ -z "${ECR_REPO_EXISTS}" ]; then \
+        aws ecr create-repository --repository-name ${IMG_NAME}; \
+    fi
+    @$(shell aws ecr get-login --no-include-email --region ${AWS_REGION} --registry-ids ${AWS_ACCOUNT_ID} )
+    @docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
+    @docker push ${ECR_URL}/${IMG_NAME}
+
 img-tag:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 

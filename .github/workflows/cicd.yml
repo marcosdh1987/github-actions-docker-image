@@ -17,7 +17,6 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo IMG_NAME
           sudo apt-get update
           sudo apt-get install -y make
 
@@ -40,7 +39,7 @@ jobs:
       - name: Check if ECR repository exists
         id: tag-img-push-ecr
         run: |
-          make promote
+          make promote2
 
       # - name: Check if ECR repository exists
       #   id: check-ecr-repo

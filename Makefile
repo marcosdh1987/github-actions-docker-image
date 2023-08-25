@@ -1,8 +1,7 @@
 SHELL=/bin/bash
 PATH := .venv/bin:$(PATH)
-export IMG_NAME?=sm-studio-custom-pytho310:latest
-export REPO_NAME?=sm-studio-custom-pytho310
-export REPO=img-${IMG_NAME}
+export IMG_NAME?=sm-studio-custom-python310
+export IMAGE_TAG?=latest
 export ENV?=dev
 export AWS_REGION=us-east-1
 export AWS_ACCOUNT_ID=789524919849
@@ -30,11 +29,11 @@ to-ecr:
 
 promote:
 	@$(shell aws ecr get-login --no-include-email --region ${AWS_REGION} --registry-ids ${AWS_ACCOUNT_ID} )
-	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}
+	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 	@docker push ${ECR_URL}/${IMG_NAME}
 
 img-tag:
-	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}
+	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 run:
 	@docker run -it ${IMG_NAME} bash

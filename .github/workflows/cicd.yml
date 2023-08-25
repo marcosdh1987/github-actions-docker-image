@@ -6,9 +6,6 @@ on:
       - main
 
 env:
-  ECR_REGISTRY: 789524919849.dkr.ecr.us-east-1.amazonaws.com
-  ECR_REPOSITORY: sm-studio-custom-pytho310
-  IMAGE_TAG: latest
   TF_WORKING_DIR: path/to/terraform/code/directory
 
 jobs:
@@ -43,13 +40,13 @@ jobs:
       - name: Check if ECR repository exists
         id: check-ecr-repo
         run: |
-          aws ecr describe-repositories --repository-names $ECR_REPOSITORY || exit 0
+          aws ecr describe-repositories --repository-names $IMG_NAME || exit 0
           echo "::set-output name=exists::true"
 
       - name: Create ECR repository if it doesn't exist
         if: steps.check-ecr-repo.outputs.exists != 'true'
         run: |
-          aws ecr create-repository --repository-name $ECR_REPOSITORY
+          aws ecr create-repository --repository-name $IMG_NAME
           echo "::set-output name=created::true"
 
       - name: Login to Amazon ECR
@@ -60,7 +57,7 @@ jobs:
         run: make img-tag
 
       - name: Push Docker image to Amazon ECR
-        run: docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+        run: docker push $ECR_URL/$IMG_NAME:$IMAGE_TAG
 
   # deploy-with-terraform:
   #   needs: push-to-ecr

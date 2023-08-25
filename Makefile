@@ -1,6 +1,6 @@
 SHELL=/bin/bash
 PATH := .venv/bin:$(PATH)
-export IMG_NAME?=sm-studio-custom-python310
+export IMG_NAME=sm-studio-custom-python310
 export IMAGE_TAG?=latest
 export ENV?=dev
 export AWS_REGION=us-east-1

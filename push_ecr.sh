@@ -11,7 +11,6 @@ region=$2
 repo_name=$3
 export AWS_DEFAULT_REGION=${region}
 
-# repo_name="talos-voice-generator-endpoint"
 version="latest"
 image_name="${repo_name}:${version}"
 

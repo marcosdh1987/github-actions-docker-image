@@ -1,7 +1,7 @@
 SHELL=/bin/bash
 PATH := .venv/bin:$(PATH)
-export IMG_NAME?=sm-studio-custom-python310
-export IMAGE_TAG?=latest
+export IMG_NAME=sm-studio-custom-python310
+export IMAGE_TAG=latest
 export ENV?=dev
 export AWS_REGION=us-east-1
 export AWS_ACCOUNT_ID=789524919849
@@ -25,21 +25,21 @@ local-build:
 	@docker build -t ${IMG_NAME} .
 
 to-ecr:
-	@$(shell ./push_ecr.sh ${AWS_ACCOUNT_ID} ${AWS_REGION} ${REPO_NAME})
+	@$(shell ./push_ecr.sh ${AWS_ACCOUNT_ID} ${AWS_REGION} ${IMG_NAME})
+
+create-ecr:
+	@$(shell   aws ecr create-repository \
+    --repository-name  ${repo_name} \
+    --image-scanning-configuration scanOnPush=true \
+    --region ${region})
+
+push-ecr:
+	@docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 promote:
 	@$(shell aws ecr get-login --no-include-email --region ${AWS_REGION} --registry-ids ${AWS_ACCOUNT_ID} )
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
-	@docker push ${ECR_URL}/${IMG_NAME}
-
-promote2:
-    $(eval ECR_REPO_EXISTS := $(shell aws ecr describe-repositories --repository-names ${IMG_NAME} 2>/dev/null))
-    @if [ -z "${ECR_REPO_EXISTS}" ]; then \
-        aws ecr create-repository --repository-name ${IMG_NAME}; \
-    fi
-    @$(shell aws ecr get-login --no-include-email --region ${AWS_REGION} --registry-ids ${AWS_ACCOUNT_ID} )
-    @docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
-    @docker push ${ECR_URL}/${IMG_NAME}
+	@docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 img-tag:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}

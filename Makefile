@@ -41,7 +41,7 @@ promote:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 	@docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
-img-tag:
+image-tag:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 run:

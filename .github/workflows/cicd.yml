@@ -56,25 +56,3 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ env.ECR_URL }}/${{ env.IMG_NAME }}:${{ env.IMAGE_TAG }}
 
-
-  # deploy-with-terraform:
-  #   needs: push-to-ecr
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2
-
-  #     - name: Deploy using Terraform
-  #       run: |
-  #         cd $TF_WORKING_DIR
-  #         terraform init
-  #         terraform plan -out=tfplan
-  #         terraform apply tfplan
-
-
-  # push-to-ecr:
-  #   needs: build
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout code
-  #       uses: actions/checkout@v2

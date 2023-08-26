@@ -29,9 +29,9 @@ to-ecr:
 
 create-ecr:
 	@$(shell   aws ecr create-repository \
-    --repository-name  ${repo_name} \
+    --repository-name  ${IMG_NAME} \
     --image-scanning-configuration scanOnPush=true \
-    --region ${region})
+    --region ${AWS_REGION})
 
 push-ecr:
 	@docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}

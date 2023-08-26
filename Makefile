@@ -45,4 +45,4 @@ img-tag:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 run:
-	@docker run -it ${IMG_NAME} bash
+	@docker run -it ${IMG_NAME} 

@@ -58,7 +58,7 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
+          docker tag $IMG_NAME $ECR_URL/$IMG_NAME:$IMAGE_TAG
 
       - name: Push Docker image to Amazon ECR
         run: docker push $ECR_URL/$IMG_NAME:$IMAGE_TAG

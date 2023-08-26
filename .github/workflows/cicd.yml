@@ -63,6 +63,7 @@ jobs:
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ env.ECR_URL }}/${{ env.IMG_NAME }}:${{ env.IMAGE_TAG }}
 
+
 # docker tag ${{ env.IMG_NAME }} ${{ env.ECR_URL }}/${{ env.IMG_NAME }}:${{ env.IMAGE_TAG }}
   # deploy-with-terraform:
   #   needs: push-to-ecr

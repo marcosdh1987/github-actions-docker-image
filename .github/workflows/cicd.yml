@@ -58,7 +58,7 @@ jobs:
 
       - name: Tag Docker image
         run: |
-          make promote
+          make image-tag IMAGE_TAG=${{ env.IMAGE_TAG }}
 
       - name: Push Docker image to Amazon ECR
         run: docker push ${{ env.ECR_URL }}/${{ env.IMG_NAME }}:${{ env.IMAGE_TAG }}

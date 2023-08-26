@@ -39,7 +39,7 @@ push-ecr:
 promote:
 	@$(shell aws ecr get-login --no-include-email --region ${AWS_REGION} --registry-ids ${AWS_ACCOUNT_ID} )
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
-
+	@docker push ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}
 
 img-tag:
 	@docker tag ${IMG_NAME} ${ECR_URL}/${IMG_NAME}:${IMAGE_TAG}

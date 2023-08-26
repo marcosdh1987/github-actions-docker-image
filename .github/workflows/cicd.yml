@@ -26,13 +26,6 @@ jobs:
       - name: Build Docker image
         run: make build
 
-  push-to-ecr:
-    needs: build
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -78,3 +71,11 @@ jobs:
   #         terraform init
   #         terraform plan -out=tfplan
   #         terraform apply tfplan
+
+
+  # push-to-ecr:
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout code
+  #       uses: actions/checkout@v2

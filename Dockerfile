@@ -1,9 +1,7 @@
-FROM python:3.10
+FROM nvcr.io/nvidia/pytorch:23.08-py3
 
 RUN apt-get update && apt-get upgrade -y && \
     apt-get install -y locales locales-all
-
-RUN apt update && apt upgrade -y
 
 RUN apt install git -y && \
     pip3 install boto3 pandas sagemaker

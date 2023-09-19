@@ -3,11 +3,12 @@ name: Build, Push Docker Image and Deploy with Terraform
 on:
   push:
     branches:
-      - main
+      - master
+      - torch
 
 env:
   ECR_URL : 789524919849.dkr.ecr.us-east-1.amazonaws.com
-  IMG_NAME : sm-studio-custom-python310
+  IMG_NAME : sm-studio-custom-pytorch
   IMAGE_TAG : latest
   TF_WORKING_DIR: path/to/terraform/code/directory
 
